@@ -30,3 +30,4 @@ application-dev.properties
 /.DS_Store
 settings.xml
 ../license.txt
+*.mv.db

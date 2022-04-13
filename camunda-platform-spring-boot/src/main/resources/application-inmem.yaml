@@ -7,8 +7,6 @@
 # How database updates should be handled
 #spring.jpa.hibernate.ddl-auto:update
 
-server.port: ${SERVER_PORT}
-
 spring:
   datasource:
     #shareable h2 database

@@ -46,11 +46,11 @@ public class WorkflowController {
 		Response response = null;
 		JSONObject workflowData = new JSONObject();
 
-		workflowData.put("messageName", jsData.get("workflowKey"));
-		workflowData.put("businessKey", jsData.get("businessKey"));
+		workflowData.put("messageName", jsData.get("key"));
 
-		if (jsData.has("processVariables")) {
-			workflowData.put("processVariables", new JSONObject(jsData.get("processVariables").toString()));
+		if (jsData.has("variables")) {
+			workflowData.put("businessKey", jsData.getJSONObject("variables").get("caseId"));
+			workflowData.put("processVariables", new JSONObject(jsData.get("variables").toString()));
 		}
 
 		LOGGER.info("\n\n Start Workflow with data: "+ workflowData.toString() +"\n\n");

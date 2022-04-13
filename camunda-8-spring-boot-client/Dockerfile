@@ -1,7 +1,7 @@
 ####
 ## run Maven build in Docker image layer and cache dependencies
 ####
-FROM maven:3-jdk-11 as builder
+FROM maven:3-jdk-8 as builder
 # setup base dir
 WORKDIR /usr/src/app
 # copy files from project
@@ -16,10 +16,10 @@ RUN --mount=type=cache,target=/root/.m2 mvn -s settings.xml -DskipTests -Dmaven.
 ####
 ## create another image layer and run the app that was built
 ####
-FROM openjdk:11-jdk as process-application
+FROM openjdk:8-jdk as process-application
 # Create app directory
 WORKDIR /usr/src/app
 # copy the built jar to the new image
 COPY --from=builder /usr/src/app/target/camunda-c8-client-1.0.0-SNAPSHOT.jar ${WORKDIR}
 # run the application
-ENTRYPOINT ["java","-Dspring.profiles.active=test","-Djava.security.egd=file:/dev/./urandom","-jar","/usr/src/app/camunda-c8-client-1.0.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap","-Dspring.profiles.active=cors,prod","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=${PORT}","-jar","/usr/src/app/camunda-c8-client-1.0.0-SNAPSHOT.jar"]

@@ -16,7 +16,7 @@ const List = require('TaskList');
 // tag::customComponents
 
 // tag::vars[]
-const apiHost = process.env.DATA_API_HOST != "" ? `${process.env.DATA_API_HOST}:${process.env.PLATFORM_API_PORT}/` : "/";
+const apiHost = process.env.DATA_API != "" ? `${process.env.DATA_API}:${process.env.PLATFORM_API_PORT}/` : "/";
 // end::vars[]
 
 // tag::app[]

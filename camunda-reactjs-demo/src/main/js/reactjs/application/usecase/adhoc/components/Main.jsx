@@ -22,11 +22,11 @@ const Workflow = require('WorkflowMain');
 const WorkflowStartAction = require('WorkflowStartAction');
 
 // tag::vars[]
-const dataApiHost = process.env.DATA_API_HOST != "" ? `${process.env.DATA_API_HOST}:${process.env.DATA_API_PORT}` : "/";
-const dataApi = `${dataApiHost}${process.env.DATA_API_ROOT}`;
+const dataApi = process.env.DATA_API != "" ? `${process.env.DATA_API}` : "/";
+const c8Api = process.env.C8_API != "" ? `${process.env.C8_API}` : "/";
+const c7Api = process.env.C7_API != "" ? `${process.env.C7_API}` : "/";
 
-const cloudApiHost = process.env.CLOUD_API_CLIENT_HOST != "" ? `${process.env.CLOUD_API_CLIENT_HOST}:${process.env.CLOUD_API_CLIENT_PORT}` : "/";
-const cloudApi = `${cloudApiHost}${process.env.CLOUD_API_CONTEXT}`;
+let workflowApi = process.env.C8_ENABLED ? c8Api : c7Api;
 
 // end::vars[]
 
@@ -171,9 +171,9 @@ class Main extends React.Component{
         console.log("Handle Start: " + JSON.stringify(data));
 
         //post the object to the endpoint to save the entity
-        this.post("POST", data, cloudApi);
+        this.post("POST", data, workflowApi);
 
-        this.state.callUpdateAll(this.state.pageSize, this);
+        // this.state.callUpdateAll(this.state.pageSize, this);
 
         this.toggleForm("confirmed");
     }

@@ -1,17 +1,14 @@
 package io.camunda.getstarted.controller;
 
-import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import java.util.Map;
 
 import io.camunda.zeebe.spring.client.EnableZeebeClient;
 import io.camunda.zeebe.spring.client.ZeebeClientLifecycle;

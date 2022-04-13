@@ -48,11 +48,35 @@ services:
     restart: always
     networks:
       - camunda-platform
-    depends_on:
-      - data-api
-      - reactjs-demo
-      - camunda-postgres
-      - smtp
+#    depends_on:
+#      - data-api
+#      - reactjs-demo
+#      - camunda-postgres
+#      - smtp
 #      - apacheds
 #      - kafka
 #      - rabbitmq-mgmt
+
+#########################################
+# C7 Client
+#########################################
+  c7-client:
+    container_name: c7-client
+    build:
+      context: ./camunda-7-spring-boot-client
+    ports:
+      - "9012:8080"
+    volumes:
+      - ./certs:/opt/certs
+    environment:
+      PORT: 8080
+      CAMUNDA_API: https://workflow-app-test.herokuapp.com/engine-rest/message
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1000M
+        reservations:
+          memory: 1000M
+    networks:
+      - camunda-platform
