@@ -22,9 +22,9 @@ const Workflow = require('WorkflowMain');
 const WorkflowStartAction = require('WorkflowStartAction');
 
 // tag::vars[]
-const dataApi = process.env.DATA_API != "" ? `${process.env.DATA_API}` : "/";
-const c8Api = process.env.C8_API != "" ? `${process.env.C8_API}` : "/";
-const c7Api = process.env.C7_API != "" ? `${process.env.C7_API}` : "/";
+const dataApi = process.env.DATA_API != "" ? process.env.DATA_API : "/";
+const c8Api = process.env.C8_API != "" ? process.env.C8_API : "/";
+const c7Api = process.env.C7_API != "" ? process.env.C7_API : "/";
 
 let workflowApi = process.env.C8_ENABLED ? c8Api : c7Api;
 

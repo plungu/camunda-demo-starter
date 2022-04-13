@@ -8,16 +8,13 @@
 // tag::nodeModules[]
 const React = require('react');
 const client = require('client');
-const follow = require('follow'); // function to hop multiple links by "rel"
 
 // tag::customComponents
 const WorkflowInfo = require('WorkflowInfo');
 // tag::customComponents
 
 // tag::vars[]
-const apiHost = process.env.DATA_API != "" ? `${process.env.DATA_API}:${process.env.PALTFORM_API_PORT}/${process.env.PLATFORM_API_ROOT}` : "/engine-rest";
-const workflowContext = process.env.WORKFLOW_CONTEXT_PATH != "" ? `${process.env.WORKFLOW_CONTEXT_PATH}` : "process-instance";
-const uri = apiHost+"/"+workflowContext
+const uri = process.env.WORKFLOW_INSTANCE_API;
 // end::vars[]
 
 // tag::app[]
