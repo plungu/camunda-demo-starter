@@ -9,6 +9,7 @@ volumes:
 networks:
   # Note there are two bridge networks. One for Zeebe and one for IAM. Operate, Tasklist, and Optimize use both
   camunda-cloud: { }
+  camunda-platform: { }
 
 services:
 ########################################
@@ -24,16 +25,7 @@ services:
       - ./certs:/opt/certs
     environment:
       PORT: 8080
-    #      DATABASE_URL: jdbc:postgresql://camunda-postgres:5432/camunda?user=camunda&password=camunda&characterEncoding=UTF-8&reWriteBatchedInserts=true&ssl=true&sslrootcert=/opt/certs/root.crt&sslcert=/opt/certs/root.crt&sslmode=require
-##      DATABASE_URL: jdbc:postgresql://camunda-postgres:5432/camunda?user=camunda&password=camunda&characterEncoding=UTF-8&reWriteBatchedInserts=true
-#      DATABASE_DRIVER: org.postgresql.Driver
-#      SERVER_PORT: 8080
-#      MAX_POOL_SIZE: 3
-#      MAIL_HOST: smtp
-#      MAIL_PORT: 2500
-#      RABBITMQ_HOST: rabbitmq-mgmt
-#      ADMIN_CLIENT_URL: http://camunda-node-1:8080
-#      DATA_API_URI: http://data-api:9000/api
+      PROFILES: test,cors
     deploy:
       resources:
         limits:
@@ -41,14 +33,9 @@ services:
           memory: 1000M
         reservations:
           memory: 1000M
-#    healthcheck:
-#      test: ["CMD", "curl", "-f", "http://camunda-platform:8080/engine-rest/engine"]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 5
-#    restart: always
     networks:
       - camunda-cloud
+      - camunda-platform
 #    depends_on:
 #      - data-api
 #      - camunda-postgres

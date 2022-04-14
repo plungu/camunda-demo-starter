@@ -22,4 +22,4 @@ WORKDIR /usr/src/app
 # copy the built jar to the new image
 COPY --from=builder /usr/src/app/target/camunda-c7-client-1.0.0-SNAPSHOT.jar ${WORKDIR}
 # run the application
-ENTRYPOINT ["java","-XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap","-Dspring.profiles.active=cors,prod","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=${PORT}","-jar","/usr/src/app/camunda-c7-client-1.0.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap","-Dspring.profiles.active=${PROFILES}","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=${PORT}","-jar","/usr/src/app/camunda-c7-client-1.0.0-SNAPSHOT.jar"]

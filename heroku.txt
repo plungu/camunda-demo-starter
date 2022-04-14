@@ -1,0 +1,37 @@
+- Install Heroku CLI
+-
+
+## Reactjs Demo App
+cd ./camunda-reactjs-demo
+heroku create --app react-workflow-app-test
+heroku container:push web --app react-workflow-app-test
+heroku container:release web --app react-workflow-app-test
+heroku logs --tail --app react-workflow-app-test
+
+## BIZ DATA API
+cd ./camunda-data-api-demo
+heroku create --app data-app-test
+heroku container:push web --app data-app-test
+heroku container:release web --app data-app-test
+heroku logs --tail --app data-app-test
+
+## C8 Client
+cd ./camunda-8-spring-boot-client
+heroku create --app c8-client-app-test
+heroku container:push web --app c8-client-app-test
+heroku container:release web --app c8-client-app-test
+heroku logs --tail --app c8-client-app-test
+
+## C7 Client
+cd ./camunda-7-spring-boot-client
+heroku create --app c7-client-app-test
+heroku container:push web --app c7-client-app-test
+heroku container:release web --app c7-client-app-test
+heroku logs --tail --app c7-client-app-test
+
+## C7 Spring Boot Engine
+cd ./camunda-platform-spring-boot
+heroku create --app workflow-app-test
+heroku container:push web --app workflow-app-test
+heroku container:release web --app workflow-app-test
+heroku logs --tail --app workflow-app-test

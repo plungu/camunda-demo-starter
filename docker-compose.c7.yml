@@ -71,6 +71,7 @@ services:
     environment:
       PORT: 8080
       CAMUNDA_API: https://workflow-app-test.herokuapp.com/engine-rest/message
+      PROFILES: local,cors
     deploy:
       resources:
         limits:
