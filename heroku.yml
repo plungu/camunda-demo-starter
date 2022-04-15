@@ -1,0 +1,12 @@
+## TODO - Investigate heroku.yml setup
+
+setup:
+  addons:
+    - plan: heroku-postgresql
+      as: DATABASE
+
+build:
+  docker:
+    web: ./camunda-7-spring-boot-client/Dockerfile
+
+

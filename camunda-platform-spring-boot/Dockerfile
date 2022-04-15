@@ -22,4 +22,4 @@ WORKDIR /usr/src/app
 # copy the built jar to the new image
 COPY --from=builder /usr/src/app/target/camunda-poc-starter-platform.jar ${WORKDIR}
 # run the application
-ENTRYPOINT ["java","-XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap","-Dspring.profiles.active=cors,prod","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=$PORT","-jar","/usr/src/app/camunda-poc-starter-platform.jar"]
+ENTRYPOINT ["java","-XX:+IgnoreUnrecognizedVMOptions -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap","-Dspring.profiles.active=${PROFILES}","-Djava.security.egd=file:/dev/./urandom","-Dserver.port=${PORT}","-jar","/usr/src/app/camunda-poc-starter-platform.jar"]

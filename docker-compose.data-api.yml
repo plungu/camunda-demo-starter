@@ -24,6 +24,7 @@ services:
     volumes:
       - ./certs:/opt/certs
     environment:
+      PROFILES: data,user,case,cors,prod
 #      DB_URL: jdbc:postgresql://camunda-postgres:5432/camunda?characterEncoding=UTF-8&reWriteBatchedInserts=true&ssl=true&sslrootcert=/opt/certs/root.crt&sslcert=/opt/certs/root.crt&sslmode=require
       DB_URL: jdbc:postgresql://camunda-postgres:5432/camunda?characterEncoding=UTF-8&reWriteBatchedInserts=true
       DB_USER: camunda
