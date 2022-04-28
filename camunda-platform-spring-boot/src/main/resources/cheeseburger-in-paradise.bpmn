@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.11.1">
+  <bpmn:message id="Message_0jx1ggs" name="pauseFlowforTest" />
+  <bpmn:message id="Message_1hlvufx" name="newMessage" />
+  <bpmn:message id="Message_0bvr81n" name="start-cheeseburger-search" />
+  <bpmn:message id="Message_0rtgbzm" name="Message_start-nlp-intent-processing" />
+  <bpmn:collaboration id="Collaboration_13int64">
+    <bpmn:participant id="Participant_nlp-intent-processing" name="nlp-intent-processing" processRef="nlp-intent-processing" />
+  </bpmn:collaboration>
+  <bpmn:process id="nlp-intent-processing" name="nlp-intent-processing" isExecutable="true">
+    <bpmn:serviceTask id="parse_entites" name="Parse Entites" camunda:asyncBefore="true" camunda:delegateExpression="${entityDelegate}">
+      <bpmn:incoming>SequenceFlow1</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_035epuf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:businessRuleTask id="determine_intent" name="Determine Intent" camunda:resultVariable="intent" camunda:decisionRef="determine-intent" camunda:mapDecisionResult="singleResult">
+      <bpmn:incoming>SequenceFlow_035epuf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_00vlnga</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0u3odaz">
+      <bpmn:incoming>SequenceFlow_00vlnga</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_12ad2ov</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_08pnqu6</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1wf8j38</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1cg0nd5</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_078t60p</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1t8hm0t">
+      <bpmn:incoming>SequenceFlow_0r1p0m7</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_11gfhqg</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0webzvr</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1r78wg0</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1octved</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1s52tqi</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:scriptTask id="Task_1u6kpik" name="Greet" scriptFormat="Javascript">
+      <bpmn:incoming>SequenceFlow_1wf8j38</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0r1p0m7</bpmn:outgoing>
+      <bpmn:script>print("SERVICE_INFO");
+var intent = execution.getVariable("intent");
+var entity_1 = execution.getVariable("entity_1");
+var entity_2 = execution.getVariable("entity_2")
+print ("***** entity_1: "+entity_1);
+print ("***** entity_2: "+entity_2);;
+print ("***** INTENT: "+intent);
+print("Execution ID: "+execution.getId());
+var response = "Hello, nice to hear from you on this glorious day!";
+execution.setVariable("response", response);</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="Task_1htej9w" name="Don&#39;t Understand" scriptFormat="Javascript">
+      <bpmn:incoming>SequenceFlow_08pnqu6</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0webzvr</bpmn:outgoing>
+      <bpmn:script>print("MISSUNDERSTOOD PATH");
+var intent = execution.getVariable("intent");
+var entity_1 = execution.getVariable("entity_1");
+var entity_2 = execution.getVariable("entity_2")
+print ("***** entity_1: "+entity_1);
+print ("***** entity_2: "+entity_2);;
+print ("***** INTENT: "+intent);
+var response = "Thanks for asking. I have no idea what your talking about. Can you try asking in a differnt way.";
+execution.setVariable("response", response);</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:callActivity id="generic_search_call_activity" name="Local Search" calledElement="generic_search">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_12ad2ov</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_11gfhqg</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="Task_1qhkqls" name="Send Respone" camunda:asyncBefore="true" camunda:delegateExpression="${amqpDelegate}">
+      <bpmn:incoming>SequenceFlow_1s52tqi</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1ut8dr4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="ScriptTask_0566hmt" name="Help" scriptFormat="Javascript">
+      <bpmn:incoming>SequenceFlow_1cg0nd5</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1r78wg0</bpmn:outgoing>
+      <bpmn:script>print("HELP PATH");
+var intent = execution.getVariable("intent");
+var entity_1 = execution.getVariable("entity_1");
+var entity_2 = execution.getVariable("entity_2")
+print ("***** entity_1: "+entity_1);
+print ("***** entity_2: "+entity_2);;
+print ("***** INTENT: "+intent);
+var response = "Hi, I see you need help. I'll get someone to help you.";
+execution.setVariable("response", response);</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:callActivity id="CallActivity_13i94p8" name="Generic Search" calledElement="generic_search">
+      <bpmn:extensionElements>
+        <camunda:in variables="all" />
+        <camunda:out variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_078t60p</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1octved</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:startEvent id="StartEventProcessStarted" name="Message Recieved" camunda:asyncAfter="true">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="query" label="Ask?" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>SequenceFlow1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1jgikhg" messageRef="Message_0rtgbzm" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1octved" sourceRef="CallActivity_13i94p8" targetRef="ExclusiveGateway_1t8hm0t" />
+    <bpmn:sequenceFlow id="SequenceFlow_078t60p" sourceRef="ExclusiveGateway_0u3odaz" targetRef="CallActivity_13i94p8">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="Javascript">print("Checking Path - Generic Search Path");
+var intent = execution.getVariable("intent");
+print("INTENT: "+intent);
+intent.get('intent')  === 'generic_search'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1r78wg0" sourceRef="ScriptTask_0566hmt" targetRef="ExclusiveGateway_1t8hm0t" />
+    <bpmn:sequenceFlow id="SequenceFlow_1cg0nd5" sourceRef="ExclusiveGateway_0u3odaz" targetRef="ScriptTask_0566hmt">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${intent.get('intent') == "help_inquiry"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1wf8j38" sourceRef="ExclusiveGateway_0u3odaz" targetRef="Task_1u6kpik">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${intent.get('intent') == 'greeting_inquiry'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_00vlnga" sourceRef="determine_intent" targetRef="ExclusiveGateway_0u3odaz" />
+    <bpmn:sequenceFlow id="SequenceFlow_1ut8dr4" sourceRef="Task_1qhkqls" targetRef="EndEventProcessEnded" />
+    <bpmn:sequenceFlow id="SequenceFlow_0webzvr" sourceRef="Task_1htej9w" targetRef="ExclusiveGateway_1t8hm0t" />
+    <bpmn:sequenceFlow id="SequenceFlow_08pnqu6" sourceRef="ExclusiveGateway_0u3odaz" targetRef="Task_1htej9w">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${intent.get('intent') == "low_confidence"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_11gfhqg" sourceRef="generic_search_call_activity" targetRef="ExclusiveGateway_1t8hm0t" />
+    <bpmn:sequenceFlow id="SequenceFlow_12ad2ov" sourceRef="ExclusiveGateway_0u3odaz" targetRef="generic_search_call_activity">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="Javascript">print("Checking Path - Generic Search Path");
+var intent = execution.getVariable("intent");
+print("INTENT: "+intent);
+intent.get('intent')  === 'location_generic_search'</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0r1p0m7" sourceRef="Task_1u6kpik" targetRef="ExclusiveGateway_1t8hm0t" />
+    <bpmn:sequenceFlow id="SequenceFlow_1s52tqi" sourceRef="ExclusiveGateway_1t8hm0t" targetRef="Task_1qhkqls" />
+    <bpmn:sequenceFlow id="SequenceFlow_035epuf" sourceRef="parse_entites" targetRef="determine_intent" />
+    <bpmn:sequenceFlow id="SequenceFlow1" sourceRef="StartEventProcessStarted" targetRef="parse_entites" />
+    <bpmn:endEvent id="EndEventProcessEnded" name="Process&#10;ended">
+      <bpmn:incoming>SequenceFlow_1ut8dr4</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0vf4lkw" camunda:delegateExpression="${completeIntentDelegate}" />
+    </bpmn:endEvent>
+    <bpmn:textAnnotation id="TextAnnotation_1mwxgg7">
+      <bpmn:text>This will get the info from the service. 
+
+Next we need to combine the info into a human readable message, before the reponse is sent.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0oohsgo" sourceRef="Task_1u6kpik" targetRef="TextAnnotation_1mwxgg7" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_13int64">
+      <bpmndi:BPMNShape id="Participant_0j1frve_di" bpmnElement="Participant_nlp-intent-processing" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1375" height="759" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1mwxgg7_di" bpmnElement="TextAnnotation_1mwxgg7">
+        <dc:Bounds x="1050" y="120" width="136" height="121" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1octved_di" bpmnElement="SequenceFlow_1octved">
+        <di:waypoint x="945" y="536" />
+        <di:waypoint x="1085" y="536" />
+        <di:waypoint x="1085" y="435" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1150" y="225" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_078t60p_di" bpmnElement="SequenceFlow_078t60p">
+        <di:waypoint x="710" y="435" />
+        <di:waypoint x="710" y="536" />
+        <di:waypoint x="845" y="536" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="860" y="190" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1r78wg0_di" bpmnElement="SequenceFlow_1r78wg0">
+        <di:waypoint x="945" y="661" />
+        <di:waypoint x="1085" y="661" />
+        <di:waypoint x="1085" y="435" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1150" y="350" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1cg0nd5_di" bpmnElement="SequenceFlow_1cg0nd5">
+        <di:waypoint x="710" y="435" />
+        <di:waypoint x="710" y="661" />
+        <di:waypoint x="845" y="661" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="860" y="252" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1wf8j38_di" bpmnElement="SequenceFlow_1wf8j38">
+        <di:waypoint x="710" y="385" />
+        <di:waypoint x="710" y="288" />
+        <di:waypoint x="845" y="288" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="860" y="40.5" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_00vlnga_di" bpmnElement="SequenceFlow_00vlnga">
+        <di:waypoint x="607" y="410" />
+        <di:waypoint x="685" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="781" y="99" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ut8dr4_di" bpmnElement="SequenceFlow_1ut8dr4">
+        <di:waypoint x="1285" y="410" />
+        <di:waypoint x="1382" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1439.5" y="99" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0webzvr_di" bpmnElement="SequenceFlow_0webzvr">
+        <di:waypoint x="945" y="777" />
+        <di:waypoint x="1085" y="777" />
+        <di:waypoint x="1085" y="435" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1150" y="466" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_08pnqu6_di" bpmnElement="SequenceFlow_08pnqu6">
+        <di:waypoint x="710" y="435" />
+        <di:waypoint x="710" y="777" />
+        <di:waypoint x="845" y="777" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="860" y="310" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_11gfhqg_di" bpmnElement="SequenceFlow_11gfhqg">
+        <di:waypoint x="945" y="410" />
+        <di:waypoint x="1060" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1137.5" y="99" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_12ad2ov_di" bpmnElement="SequenceFlow_12ad2ov">
+        <di:waypoint x="735" y="410" />
+        <di:waypoint x="845" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="925" y="99" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0r1p0m7_di" bpmnElement="SequenceFlow_0r1p0m7">
+        <di:waypoint x="945" y="288" />
+        <di:waypoint x="1085" y="288" />
+        <di:waypoint x="1085" y="385" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1150" y="-23" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1s52tqi_di" bpmnElement="SequenceFlow_1s52tqi">
+        <di:waypoint x="1110" y="410" />
+        <di:waypoint x="1185" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1282.5" y="99" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_035epuf_di" bpmnElement="SequenceFlow_035epuf">
+        <di:waypoint x="436" y="410" />
+        <di:waypoint x="507" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="606.5" y="99" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_08va5r8_di" bpmnElement="SequenceFlow1">
+        <di:waypoint x="253" y="410" />
+        <di:waypoint x="336" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="429.5" y="95" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_15nx4s9_di" bpmnElement="parse_entites">
+        <dc:Bounds x="336" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BusinessRuleTask_1alxtbf_di" bpmnElement="determine_intent">
+        <dc:Bounds x="507" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0u3odaz_di" bpmnElement="ExclusiveGateway_0u3odaz" isMarkerVisible="true">
+        <dc:Bounds x="685" y="385" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="890" y="149" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1t8hm0t_di" bpmnElement="ExclusiveGateway_1t8hm0t" isMarkerVisible="true">
+        <dc:Bounds x="1060" y="385" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1265" y="149" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_1a3nlgc_di" bpmnElement="Task_1u6kpik">
+        <dc:Bounds x="845" y="248" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_09ydjk4_di" bpmnElement="Task_1htej9w">
+        <dc:Bounds x="845" y="737" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CallActivity_1694e5i_di" bpmnElement="generic_search_call_activity">
+        <dc:Bounds x="845" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_08caxs5_di" bpmnElement="Task_1qhkqls">
+        <dc:Bounds x="1185" y="370" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_0566hmt_di" bpmnElement="ScriptTask_0566hmt">
+        <dc:Bounds x="845" y="621" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CallActivity_13i94p8_di" bpmnElement="CallActivity_13i94p8">
+        <dc:Bounds x="845" y="496" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0izmstk_di" bpmnElement="StartEventProcessStarted">
+        <dc:Bounds x="217" y="392" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="213" y="428" width="46" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0jwiruz_di" bpmnElement="EndEventProcessEnded">
+        <dc:Bounds x="1382" y="392" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1381" y="428" width="40" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0oohsgo_di" bpmnElement="Association_0oohsgo">
+        <di:waypoint x="945" y="264" />
+        <di:waypoint x="1050" y="213" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

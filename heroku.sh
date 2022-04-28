@@ -18,11 +18,13 @@
 # https://devcenter.heroku.com/articles/config-vars#managing-config-vars
 
 # C8 Clinet Configs
-clusterId=
-clientId=
-clientSecret=
+clusterId=1fe5aee7-1d1a-4164-ae0c-fa2636b53ce0
+clientId=oHMuUuG3WTeSdzZS99t7iepG.GNIISgA
+clientSecret=ZWowBVKp41Cq99kXmsa4WOa_isw2Luo8c_hXP.2SvdbNIuFPqXvGMTaomVi~Mtxm
+herokuUser=""
+herokuAuthTocken=heroku auth:token
 
-commands="Commands: help, login, list, install, delete, quit"
+commands="Commands: help, login, docker, list, install, delete, quit"
 
 cmd=$1
 if [ -z cmd ]
@@ -52,6 +54,12 @@ if [ $cmd == 'login' ];
 then
 heroku login
 fi
+
+if [ $cmd == 'docker' ];
+then
+ docker login --username=${herokuUser} --password=${herokuAuthTocken} registry.heroku.com
+fi
+
 
 if [ $cmd == 'install' ];
 then

@@ -25,7 +25,10 @@ services:
       - ./certs:/opt/certs
     environment:
       PORT: 8080
-      PROFILES: test,cors
+      PROFILES: prod,cors,cardinal
+      CLUSTER_ID: be7a5c9e-915f-4944-b448-bbde59390f21
+      CLIENT_ID: ze3-yz2AvK6ReorRxQ.cIBzKDD6CNXj5
+      CLIENT_SECRET: iFrG86nyk_hG_rTQJJGXGkHm9fiFNcPimQwjCw2AjoW4t1lBPU0Ypbimzgrzo-oJ
     deploy:
       resources:
         limits:
