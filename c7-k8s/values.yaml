@@ -1,0 +1,180 @@
+# Default values for camunda-bpm-platform.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+general:
+  debug: true
+  replicaCount: 1
+  nameOverride: ""
+  fullnameOverride: ""
+
+# Set deployment initContainers for any pre-startup proposes.
+initContainers: []
+
+image:
+  repository: registry.camunda.cloud/cambpm-ee/camunda-bpm-platform-ee
+  tag: run-7.16.2
+  pullPolicy: IfNotPresent
+  pullSecrets:
+    - name: camunda-reg-cred
+  command: ['./camunda.sh']
+  args: ['--rest , --swaggerui']
+
+processAppWar:
+  enabled: false
+  name: project.war
+
+license:
+  enabled: true
+
+# Extra environment variables to customize the deployment.
+# For more details: https://github.com/camunda/docker-camunda-bpm-platform
+extraEnvs: []
+# Example:
+# - name: DB_VALIDATE_ON_BORROW
+#   value: false
+
+# By default H2 database is used, which is handy for demos and tests,
+# however, H2 is not supported in a clustered scenario.
+# So for real-world workloads, an external database like PostgreSQL should be used.
+database:
+  # In case H2 database is used.
+  diskSize: 1G
+  # In case PostgreSQL or MySQL databases are used.
+  driver: org.postgresql.Driver
+  url: jdbc:postgresql://workflow-database-postgresql.default.svc.cluster.local:5432/workflow
+  credentialsSecertName: workflow-database-credentials
+  credentialsSecretKeys:
+    username: DB_USERNAME
+    password: DB_PASSWORD
+
+# Using NodePort for AWS EKS Controller
+# Use ClusterIP for Nginx Controller
+service:
+  type: ClusterIP
+  port: 8080
+  portName: http
+
+metrics:
+  enabled: true
+  service:
+    type: ClusterIP
+    port: 9091
+    portName: metrics
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/path: "/"
+      prometheus.io/port: "9091"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# The StartupProbe works with Kubernetes >= 1.6
+startupProbe:
+  enabled: false
+  config:
+    httpGet:
+      path: /camunda/
+      port: http
+    initialDelaySeconds: 120
+    periodSeconds: 60
+
+readinessProbe:
+  enabled: true
+  config:
+    httpGet:
+      path: /engine-rest/incident/count
+      port: http
+    initialDelaySeconds: 120
+    periodSeconds: 60
+
+# An arbitrary use of livenessProbe could make a lot of service interruption, use it wisely.
+livenessProbe:
+  enabled: false
+  config:
+    httpGet:
+      path: /camunda/
+      port: http
+    initialDelaySeconds: 120
+    periodSeconds: 60
+
+# See link below to install nginx controller
+# https://artifacthub.io/packages/helm/bitnami/nginx-ingress-controller
+
+# Kubernetes ingress config for Nginx Ingress Controller
+ingress:
+  enabled: true
+  annotations: {
+      nginx.ingress.kubernetes.io/ingress.class: nginx,
+      nginx.ingress.kubernetes.io/affinity: "cookie",
+      nginx.ingress.kubernetes.io/affinity-mode: "persistent",
+      nginx.ingress.kubernetes.io/session-cookie-expires: "172800",
+      nginx.ingress.kubernetes.io/session-cookie-max-age: "172800",
+    }
+    # see more config options https://kubernetes.github.io/ingress-nginx/examples/affinity/cookie/
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: camunda.127.0.0.1.nip.io
+      paths: ["/"]
+  tls: []
+  #  - secretName: camunda-bpm-platform-tls
+  #    hosts:
+  #      - camunda-bpm-platform.local
+
+# Ingress config for AWS EKS ingress controller
+albIngress:
+  enabled: false
+  annotations: {
+    kubernetes.io/ingress.class: alb,
+    alb.ingress.kubernetes.io/scheme: internet-facing,
+#    alb.ingress.kubernetes.io/target-type: ip,
+  }
+  hosts:
+    path: /*
+#  tls: []
+#    - secretName: camunda-bpm-platform-tls
+#      hosts:
+#        - camunda-bpm-platform.local
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources: {}
+  # If you do want to specify resources, uncomment the following lines,
+  # adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
