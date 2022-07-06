@@ -1,0 +1,12 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pg-client-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: pg-client-job
+        image: jbergknoff/postgresql-client
+        command: ["postgresql://camunda:camunda@c7-database-postgresql:5432/camunda", "psql CREATE SCHEMA IF NOT EXISTS tnt_1;"]
+      restartPolicy: Never
