@@ -1,0 +1,15 @@
+#### Run C7 Tomcat
+
+  make values=camunda7-tomcat-values.yaml tomcat
+
+#### Run C7 camunda-run
+
+  make values=camunda7-run-values.yaml run
+
+#### Clean C7 Tomcat
+
+  make clean-tomcat
+
+#### Clean C7 camunda-run
+
+  make clean-run
