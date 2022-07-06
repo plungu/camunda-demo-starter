@@ -1,0 +1,14 @@
+global:
+  postgresql:
+    existingSecret: c7-db-secret
+auth:
+  enablePostgresUser: true
+  postgresPassword: "StrongPassword"
+  username: "camunda"
+  password: "camunda"
+  database: "camunda"
+# The postgres helm chart deployment will be using PVC postgresql-data-claim
+# primary:
+#   persistence:
+#     enabled: true
+#     existingClaim: "postgresql_data_claim_001"

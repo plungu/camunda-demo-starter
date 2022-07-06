@@ -17,7 +17,7 @@
       <property name="history">full</property>
       <property name="databaseSchemaUpdate">true</property>
       <property name="authorizationEnabled">true</property>
-      <property name="databaseTablePrefix">tnt_1.</property>
+      <!-- <property name="databaseTablePrefix">tnt_1.</property> -->
     </properties>
 
     <plugins>
@@ -63,7 +63,7 @@
     </plugins>
   </process-engine>
 
-  <process-engine name="tenant2">
+  <!-- <process-engine name="tenant2">
     <job-acquisition>tenant2</job-acquisition>
     <configuration>org.camunda.bpm.engine.impl.cfg.StandaloneProcessEngineConfiguration</configuration>
     <datasource>java:jdbc/ProcessEngineTenant2</datasource>
@@ -117,5 +117,5 @@
         </properties>
       </plugin>
     </plugins>
-  </process-engine>
+  </process-engine> -->
 </bpm-platform>

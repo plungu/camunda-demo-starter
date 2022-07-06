@@ -1,5 +1,5 @@
 .PHONY: camunda7
-camunda7: namespace
+camunda7:
 	helm repo add camunda7 https://helm.camunda.cloud
 	helm repo update camunda7
 	helm search repo $(chart)
@@ -15,7 +15,7 @@ namespace:
 # Generates templates from the camunda7 helm charts, useful to make some more specific changes which are not doable by the values file.
 .PHONY: template
 template:
-	helm template $(release) $(chart) -f camunda7-values.yaml --skip-crds --output-dir .
+	helm template $(release) $(chart) -f $(values) --skip-crds --output-dir .
 	@echo "To apply the templates use: kubectl apply -f camunda7-platform/templates/ -n $(namespace)"
 
 # .PHONY: update

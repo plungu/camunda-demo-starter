@@ -1,0 +1,27 @@
+general:
+  replicaCount: 1
+
+image:
+  tag: run #spring-boot camunda-run flavor
+
+extraEnvs:
+# some environment variblaes only work for Camunda-Run/Spring-Boot
+# spring-boot/run only
+- name: camunda.bpm.history-level
+  value: ACTIVITY
+
+# By default H2 database is used, which is handy for demos and tests,
+# however, H2 is not supported in a clustered scenario.
+# So for real-world workloads, an external database like PostgreSQL should be used.
+database:
+  # In case H2 database is used.
+  diskSize: 1G
+  # In case PostgreSQL or MySQL databases are used.
+  driver: org.postgresql.Driver
+  url: jdbc:postgresql://c7-database-postgresql.camunda7.svc.cluster.local:5432/camunda
+  credentialsSecretName: c7-db-secret
+  credentialsSecretEnabled: true
+  # The username and password keys could be customized to whatever used in the credentials secret.
+  credentialsSecretKeys:
+    username: DB_USERNAME
+    password: DB_PASSWORD
